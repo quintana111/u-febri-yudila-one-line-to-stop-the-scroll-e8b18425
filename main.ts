@@ -10,6 +10,7 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 export const ENTRY =
   "My phone's screen time report called me \"brave\" for opening it at 3 a.m. again.";
 
+// Rule: single line, at most 200 chars, no hidden whitespace or control chars.
 export function validateEntry(entry: string): void {
   if (!entry || entry.trim().length === 0) {
     throw new Error("entry must not be empty");
@@ -19,6 +20,12 @@ export function validateEntry(entry: string): void {
   }
   if (entry.includes("\n") || entry.includes("\r")) {
     throw new Error("entry must be a single line");
+  }
+  if (entry.includes(" ")) {
+    throw new Error("entry must not contain non-breaking spaces (U+00A0)");
+  }
+  if (/[\u0000-\u001F\u007F]/.test(entry)) {
+    throw new Error("entry must not contain control characters");
   }
 }
 
